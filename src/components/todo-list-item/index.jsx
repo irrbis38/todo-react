@@ -8,13 +8,13 @@ class TodoListItem extends React.Component {
     important: false
   };
   onClickHandler = () => {
-    this.setState({isDone: true});
+    this.setState(({isDone}) => ( {isDone: !isDone} ));
   };
   onMarkImportant = () => {
-    this.setState({important: true});
+    this.setState(({important}) => ( {important: !important} ));
   };
   render() {
-    const { label } = this.props;
+    const { label, onDeleted } = this.props;
     const {isDone, important} = this.state;
 
     const style = {
@@ -43,6 +43,7 @@ class TodoListItem extends React.Component {
         <button
           type="button"
           className="btn btn-outline-danger btn-sm float-right"
+          onClick={onDeleted}
         >
           <i className="fa fa-trash-o" />
         </button>
