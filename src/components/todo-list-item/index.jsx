@@ -3,19 +3,8 @@ import React from "react";
 import "./todo-list-item.css";
 
 class TodoListItem extends React.Component {
-  state = {
-    isDone: false,
-    important: false
-  };
-  onClickHandler = () => {
-    this.setState(({isDone}) => ( {isDone: !isDone} ));
-  };
-  onMarkImportant = () => {
-    this.setState(({important}) => ( {important: !important} ));
-  };
   render() {
-    const { label, onDeleted } = this.props;
-    const {isDone, important} = this.state;
+    const { label, onDeleted, onToggleImportant, onToggleDone, isDone, important } = this.props;
 
     const style = {
       color: important ? "steelblue" : "black",
@@ -28,14 +17,14 @@ class TodoListItem extends React.Component {
 
     return (
       <span className={itemClass}>
-        <span className="todo-list-item-label" style={style} onClick={this.onClickHandler}>
+        <span className="todo-list-item-label" style={style} onClick={onToggleDone}>
           {label}
         </span>
 
         <button
           type="button"
           className="btn btn-outline-success btn-sm float-right"
-          onClick={this.onMarkImportant}
+          onClick={onToggleImportant}
         >
           <i className="fa fa-exclamation" />
         </button>
