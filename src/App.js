@@ -1,8 +1,8 @@
 import React from "react";
-import AppHeader from "./components/app-header";
-import SearchPanel from "./components/search-panel";
-import TodoList from "./components/todo-list";
-import ItemStatusFilter from "./components/item-status-filter";
+import AppHeader from "./components/app-header/app-header";
+import SearchPanel from "./components/search-panel/search-panel";
+import TodoList from "./components/todo-list/todo-list";
+import ItemStatusFilter from "./components/item-status-filter/item-status-filter";
 import ItemAddForm from "./components/item-add-form/item-add-form";
 
 import "./App.css";
@@ -17,6 +17,7 @@ class App extends React.Component {
       this.createTodoItem("Kiss wife"),
     ],
     searchText: "",
+    filterStatus: "all",
   };
 
   createTodoItem(label) {
@@ -70,6 +71,10 @@ class App extends React.Component {
     this.setState({ searchText: searchInput });
   };
 
+  onFilterChange = (filterStatus) => {
+    this.setState({ filterStatus: filterStatus });
+  };
+
   search = (items, term) => {
     if (term.length === 0) {
       return items;
@@ -80,9 +85,25 @@ class App extends React.Component {
     });
   };
 
+  filter(items, filterStatus) {
+    switch (filterStatus) {
+      case "all":
+        return items;
+      case "active":
+        return items.filter((item) => !item.isDone);
+      case "done":
+        return items.filter((item) => item.isDone);
+      default:
+        return items;
+    }
+  }
+
   render() {
-    const { todoData, searchText } = this.state;
-    const visibleItems = this.search(todoData, searchText);
+    const { todoData, searchText, filterStatus } = this.state;
+    const visibleItems = this.filter(
+      this.search(todoData, searchText),
+      filterStatus
+    );
     const doneCount = todoData.filter((el) => el.isDone).length;
     const todoCount = todoData.length - doneCount;
     return (
@@ -90,7 +111,10 @@ class App extends React.Component {
         <AppHeader toDo={todoCount} done={doneCount} />
         <div className="top-panel d-flex">
           <SearchPanel onSearch={this.onSearch} searchText={searchText} />
-          <ItemStatusFilter />
+          <ItemStatusFilter
+            filter={filterStatus}
+            onFilterChange={this.onFilterChange}
+          />
         </div>
         <TodoList
           todos={visibleItems}
