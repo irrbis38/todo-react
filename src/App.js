@@ -16,6 +16,7 @@ class App extends React.Component {
       this.createTodoItem("Create react app"),
       this.createTodoItem("Kiss wife"),
     ],
+    searchText: "",
   };
 
   createTodoItem(label) {
@@ -65,19 +66,34 @@ class App extends React.Component {
     });
   };
 
+  onSearch = (searchInput) => {
+    this.setState({ searchText: searchInput });
+  };
+
+  search = (items, term) => {
+    if (term.length === 0) {
+      return items;
+    }
+
+    return items.filter((el) => {
+      return el.label.toLowerCase().indexOf(term.toLowerCase()) > -1;
+    });
+  };
+
   render() {
-    const { todoData } = this.state;
+    const { todoData, searchText } = this.state;
+    const visibleItems = this.search(todoData, searchText);
     const doneCount = todoData.filter((el) => el.isDone).length;
     const todoCount = todoData.length - doneCount;
     return (
       <div className="todo-app">
         <AppHeader toDo={todoCount} done={doneCount} />
         <div className="top-panel d-flex">
-          <SearchPanel />
+          <SearchPanel onSearch={this.onSearch} searchText={searchText} />
           <ItemStatusFilter />
         </div>
         <TodoList
-          todos={todoData}
+          todos={visibleItems}
           onDeleted={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}
